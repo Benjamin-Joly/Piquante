@@ -4,6 +4,7 @@ dotenv.config();
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/user');
 const salsaRoutes = require('./routes/salsa');
+const path = require('path');
 const app = express();
 
 mongoose.connect( process.env.DB_CONNECT,
@@ -21,7 +22,7 @@ mongoose.connect( process.env.DB_CONNECT,
         next();
       });
     
-
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', salsaRoutes);      
 app.use('/api/auth', userRoutes);
 

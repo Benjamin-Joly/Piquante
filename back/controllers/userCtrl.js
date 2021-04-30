@@ -24,6 +24,7 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
     const user = await User.findOne({email: req.body.email});
+    const userId = user._id;
         if(!user){ return res.status(401).json({error : 'User unknown :('}) }
     const validPass = await bcrypt.compare(req.body.password, user.password);
         if(!validPass){ return res.status(401).json({error:'Wrong password !'}) }
@@ -31,5 +32,5 @@ exports.login = async (req, res, next) => {
                             process.env.TOKENSECRET,
                             {expiresIn:'12h'}
                         )
-        res.header('Authorization', token).json({token});
+        res.header('Authorization', token).json({userId, token});
 };
