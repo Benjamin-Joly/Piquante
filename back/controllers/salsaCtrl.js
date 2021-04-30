@@ -37,10 +37,11 @@ const arrayRemove = (arr, value) => {
             salsaLiked.usersLiked = arrayRemove(salsaLiked.usersLiked, saveLike.userId);
             salsaLiked.usersDisliked = arrayRemove(salsaLiked.usersDisliked, saveLike.userId);
         };
+        salsaLiked.likes = salsaLiked.usersLiked.length;
+        salsaLiked.dislikes = salsaLiked.usersDisliked.length;
         const salsaLikeSaved = await salsaLiked.save();
         try{
             res.status(200).json({message:'liked !'});
-            //const salsaLiked = await Salsa.findOne({ _id: req.params.id }); pas sûr de ce truc
         }
         catch{res.status(401).json({message:'failed to like'})}
     }

@@ -8,8 +8,8 @@ const salsaSchema = mongoose.Schema({
         manufacturer:{type:String},
         mainPepper:{type:String},
         heat:{type:Number},
-        likes:{type:Number},
-        dislikes:{type:Number},
+        likes:{type:String},
+        dislikes:{type:String},
         usersLiked:[{type:String}],
         usersDisliked:[{type:String}],
     imageUrl:{type:String}
