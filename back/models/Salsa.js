@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
-
 const salsaSchema = mongoose.Schema({
         userId:{type:String},
         name:{type:String},
@@ -8,12 +6,11 @@ const salsaSchema = mongoose.Schema({
         manufacturer:{type:String},
         mainPepper:{type:String},
         heat:{type:Number},
-        likes:{type:String},
-        dislikes:{type:String},
+        likes:{type:Number},
+        dislikes:{type:Number},
         usersLiked:[{type:String}],
         usersDisliked:[{type:String}],
     imageUrl:{type:String}
 });
-
 
 module.exports = mongoose.model('Salsa', salsaSchema); 

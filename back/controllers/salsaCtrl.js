@@ -9,6 +9,11 @@ exports.createSalsa = (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.TOKENSECRET);
     const userId = decodedToken.userId;
     const salsaObject = JSON.parse(req.body.sauce);
+    salsaObject.likes = 0;
+    salsaObject.dislikes = 0;
+    salsaObject.usersDisliked = [];
+    salsaObject.usersLiked = [];
+
     const salsa = new Salsa({
       ...salsaObject,
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
@@ -19,34 +24,33 @@ exports.createSalsa = (req, res, next) => {
       .catch(error => res.status(400).json({ error }));
   };
 
-
-const arrayRemove = (arr, value) => {
-  const result = arr.filter(id => id != value);
-  return result;
-}
-
   exports.likeSalsa = async (req, res, next) => {
-    const saveLike = req.body;
     const salsaLiked = await Salsa.findOne({ _id: req.params.id });
+    const likeReq = req.body.like;
+    const userReq = req.body.userId;
     try{
-        if(saveLike.like === 1){
-            salsaLiked.usersLiked.push(saveLike.userId);
-        }else if(saveLike.like === -1){
-            salsaLiked.usersDisliked.push(saveLike.userId);
-        }else if(saveLike.like === 0){
-            salsaLiked.usersLiked = arrayRemove(salsaLiked.usersLiked, saveLike.userId);
-            salsaLiked.usersDisliked = arrayRemove(salsaLiked.usersDisliked, saveLike.userId);
-        };
-        salsaLiked.likes = salsaLiked.usersLiked.length;
-        salsaLiked.dislikes = salsaLiked.usersDisliked.length;
-        const salsaLikeSaved = await salsaLiked.save();
-        try{
-            res.status(200).json({message:'liked !'});
+      const arrFilter = (arr, value) => {
+        const valueIndex = arr.indexOf(value);
+        const filter = arr.filter(x => x !==value);
+        return arr = filter;
+      }
+        if(likeReq === 1){
+          salsaLiked.usersLiked.push(userReq);
+        } else if(likeReq === -1){
+          salsaLiked.usersDisliked.push(userReq);
+        } else if(likeReq === 0){
+          salsaLiked.usersLiked = arrFilter(salsaLiked.usersLiked, userReq);
+          salsaLiked.usersDisliked = arrFilter(salsaLiked.usersDisliked, userReq);
         }
-        catch{res.status(401).json({message:'failed to like'})}
-    }
-    catch(err){
-        res.status(400).json({err});
+        
+        salsaLiked.likes = 0 + (salsaLiked.usersLiked.length);
+        salsaLiked.dislikes = 0 + (salsaLiked.usersDisliked.length);
+
+         salsaLiked.save()
+         .then(() => res.status(200).json({message:'modif saved !'}))
+         .catch(error => res.status(401).json({message:'failed to save'}));
+    }catch(err){
+      res.status(400).json({err})
     }
   };
 
