@@ -1,0 +1,20 @@
+To launch the app ##############
+
+1/ frontend===================
+
+You can clone this repo https://github.com/OpenClassrooms-Student-Center/dwj-projet6
+then you must install the front end stack by following these commands
+npm install
+npm install node-sass@4.14.1
+npm start
+you can load the app from http://localhost4200
+
+2/ backend+++++++++++++++++++++
+
+go to back folder
+then run npm install
+then npm start or nodemon server
+the server is running on localhost3000
+
+.env.example file is provided
+MP for auth keys and DataBase. (although you can test it on your own mongoDB)

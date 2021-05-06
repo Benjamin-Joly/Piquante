@@ -1,14 +1,15 @@
 const Salsa = require('../models/Salsa');
 const dotenv = require('dotenv');
 dotenv.config();
-const userCtrl = require('../controllers/userCtrl');
 const jwt =require('jsonwebtoken');
 const fs = require('fs');
+
 
 exports.createSalsa = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, process.env.TOKENSECRET);
     const userId = decodedToken.userId;
+
     const salsaObject = JSON.parse(req.body.sauce);
     salsaObject.likes = 0;
     salsaObject.dislikes = 0;
