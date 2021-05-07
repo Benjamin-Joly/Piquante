@@ -4,13 +4,13 @@ dotenv.config();
 const jwt =require('jsonwebtoken');
 const fs = require('fs');
 
-
-exports.createSalsa = (req, res, next) => {
+exports.createSalsa = async (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, process.env.TOKENSECRET);
     const userId = decodedToken.userId;
 
     const salsaObject = JSON.parse(req.body.sauce);
+    delete salsaObject._id;
     salsaObject.likes = 0;
     salsaObject.dislikes = 0;
     salsaObject.usersDisliked = [];
@@ -21,9 +21,12 @@ exports.createSalsa = (req, res, next) => {
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
       userId: userId
     });
+
     salsa.save()
-      .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
-      .catch(error => res.status(400).json({ error }));
+    .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
+    .catch((error) => {
+      res.status(400).json({ error });
+    }); 
   };
 
   exports.likeSalsa = async (req, res, next) => {
