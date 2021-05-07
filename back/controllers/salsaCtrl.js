@@ -4,7 +4,7 @@ dotenv.config();
 const jwt =require('jsonwebtoken');
 const fs = require('fs');
 
-exports.createSalsa = async (req, res, next) => {
+exports.createSalsa = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, process.env.TOKENSECRET);
     const userId = decodedToken.userId;
@@ -24,9 +24,20 @@ exports.createSalsa = async (req, res, next) => {
 
     salsa.save()
     .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
-    .catch((error) => {
-      res.status(400).json({ error });
+    .catch((error, img) => {
+      res.status(400).json({error});
+      const filename = salsa.imageUrl.split('/images/')[1];
+      console.log(filename);
+      fs.unlink(`images/${filename}`, () => {
+        console.log('fichier supprimé');
+      });
     }); 
+  };
+
+  const findImg = (salsa) => {
+    const filename = salsa.imageUrl.split('/images/')[1];
+    console.log(filename);
+    fs.unlink(`images/${filename}`);
   };
 
   exports.likeSalsa = async (req, res, next) => {

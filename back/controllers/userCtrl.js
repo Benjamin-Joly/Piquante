@@ -30,8 +30,8 @@ exports.login = async (req, res, next) => {
     if(error) return res.status(400).json(error.details[0].message);
 
     const user = await User.findOne({email: req.body.email});
-    const userId = user._id;
         if(!user){ return res.status(401).json({error : 'User unknown :('}) }
+        const userId = user._id;
     const validPass = await bcrypt.compare(req.body.password, user.password);
         if(!validPass){ return res.status(401).json({error:'Wrong password !'}) }
     const token = jwt.sign({userId: user._id}, 
